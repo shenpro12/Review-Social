@@ -40,10 +40,10 @@ namespace review.Services
                 throw new NotFoundException($"Tỉnh ID '{req.ProvinceID}' không tồn tại!");
             }
             //B2: nếu có r xét tới tới Name của ProvinceCategory xem có chưa
-            var prCateName = _dataContext.ProvinceCategoryEntitys.FirstOrDefault(p => p.Name == req.Name);
+            var prCateName = _dataContext.ProvinceCategoryEntitys.FirstOrDefault(p => p.Name == req.Name && province.ID == req.ProvinceID);
             if (prCateName != null)
             {
-                throw new DuplicatedException($"Tên tỉnh {req.Name} đã tồn tại!");
+                throw new DuplicatedException($"Tên category {req.Name} đã tồn tại!");
             }
 
             ImageUploadResult image = new ImageUploadResult();

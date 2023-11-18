@@ -16,7 +16,7 @@ namespace review.Controllers
         private readonly IAuthService _authService;
         public AuthController(IAuthService authService)
         { 
-            _authService = authService;
+            _authService = authService;//
         }
 
         [HttpPost("signup")]

@@ -104,6 +104,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapFallbackToFile("dsa");
 
 app.UseExceptionMiddleware();
 
