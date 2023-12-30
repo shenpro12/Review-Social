@@ -12,5 +12,7 @@ namespace review.Common.Entities
 
         [Column(TypeName = "nvarchar(100)")]
         public string Name { get; set; }
+        [Column(TypeName = "nvarchar(50)")]
+        public string Slug { get; set; }
     }
 }

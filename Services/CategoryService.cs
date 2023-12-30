@@ -35,7 +35,8 @@ namespace review.Services
             CategoryEntity cate = new CategoryEntity()
             {
                 ID = Guid.NewGuid().ToString(),
-                Name = req.Name
+                Name = req.Name,
+                Slug = req.Slug,
             };
             _dataContext.CategoryEntitys.Add(cate);
             await _dataContext.SaveChangesAsync();
@@ -58,7 +59,8 @@ namespace review.Services
             var listCategory = _dataContext.CategoryEntitys.Select(l => new CategoryResModel()
             {
                 Name = l.Name,
-                ID = l.ID
+                ID = l.ID,
+                Slug = l.Slug
             });
 
             var list = new List<CategoryResModel>();
@@ -86,6 +88,7 @@ namespace review.Services
                 throw new DuplicatedException($"Tên {req.Name} đã tồn tại!");
             }
             category.Name = req.Name is not null ? req.Name : category.Name;
+            category.Slug = req.Slug is not null ? req.Slug : category.Slug;
             _dataContext.CategoryEntitys.Update(category);
             await _dataContext.SaveChangesAsync();
         }

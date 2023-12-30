@@ -1,4 +1,5 @@
-﻿using review.Common.Entities;
+﻿using CloudinaryDotNet.Actions;
+using review.Common.Entities;
 using review.Common.Exceptions;
 using review.Common.ReqModels;
 using review.Common.ResModels;
@@ -20,10 +21,13 @@ namespace review.Services
     public class ProvinceService : IProvinceService
     {
         private readonly DataContext _dataContext;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public ProvinceService(DataContext dataContext)
+        public ProvinceService(DataContext dataContext, ICloudinaryService cloudinaryService)
         {
             _dataContext = dataContext;
+            _cloudinaryService = cloudinaryService;
+
         }
         public async Task Add(ProvinceReqModel req)
         {
@@ -32,13 +36,19 @@ namespace review.Services
             {
                 throw new DuplicatedException($"Tỉnh thành {req.Name} đã tồn tại");
             }
+
+            ImageUploadResult image = new ImageUploadResult();
+            image = await _cloudinaryService.UploadImage(req.CategoryThumb);
+
             ProvinceEntity provinceEntity = new ProvinceEntity()
             {
                 ID = Guid.NewGuid().ToString(),
-                Name = req.Name
+                Name = req.Name,
+                Slug = req.Slug,
+                CategoryThumb = image.PublicId
             };
             _dataContext.ProvinceEntitys.Add(provinceEntity);
-            await _dataContext.SaveChangesAsync();
+            await _dataContext.SaveChangesAsync();  
         }
 
         public async Task Delete(string id)
@@ -64,7 +74,18 @@ namespace review.Services
             {
                 throw new DuplicatedException($"Tên tỉnh {req.Name} đã tồn tại!");
             }
+            ImageUploadResult image = new ImageUploadResult();
+            if (req.CategoryThumb is not null)
+            {
+                image = await _cloudinaryService.UploadImage(req.CategoryThumb);
+                if (province.CategoryThumb != null)
+                {
+                    await _cloudinaryService.DeleteImage(province.CategoryThumb);
+                }
+            }
             province.Name = province.Name;
+            province.CategoryThumb = image.PublicId;
+            province.Slug = req.Slug;
             _dataContext.ProvinceEntitys.Update(province);
             await _dataContext.SaveChangesAsync();
         }
