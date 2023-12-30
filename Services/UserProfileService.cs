@@ -69,7 +69,7 @@ namespace review.Services
             userProfile.Name = req.Name is not null ? req.Name : userProfile.Name;
             userProfile.Phone = req.Phone is not null ? req.Phone : userProfile.Phone;
             userProfile.Gender = req.Gender is not null ? req.Gender : userProfile.Gender;
-            userProfile.Avatar = image.PublicId is not null ? image.PublicId : userProfile.Avatar;
+            userProfile.Avatar = image?.SecureUrl?.OriginalString is not null ? image.SecureUrl.OriginalString : userProfile.Avatar;
             _dataContext.ProfileEntitys.Update(userProfile);
             await _dataContext.SaveChangesAsync();
         }
@@ -212,7 +212,7 @@ namespace review.Services
                 Name = account.Profile.Name,
                 Phone = account.Profile.Phone,
                 Gender = account.Profile.Gender,
-                Avatar = account.Profile.Avatar == "" ? "https://res.cloudinary.com/dbey8svpl/image/upload/v1694912519/user_tidw2g.png" : $"https://res.cloudinary.com/dbey8svpl/image/upload/v1696056834/{account.Profile.Avatar}.jpg",
+                Avatar = account.Profile.Avatar == "" ? "https://res.cloudinary.com/dbey8svpl/image/upload/v1694912519/user_tidw2g.png" : account.Profile.Avatar,
                 Identify = account.Profile.Identify,
                 AccountID = account.Profile.AccountID,
             };

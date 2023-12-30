@@ -45,7 +45,7 @@ namespace review.Services
                 ID = Guid.NewGuid().ToString(),
                 Name = req.Name,
                 Slug = req.Slug,
-                CategoryThumb = image.PublicId
+                CategoryThumb = image.SecureUrl.OriginalString
             };
             _dataContext.ProvinceEntitys.Add(provinceEntity);
             await _dataContext.SaveChangesAsync();  
@@ -57,6 +57,10 @@ namespace review.Services
             if (province == null)
             {
                 throw new NotFoundException($"Tỉnh thành ID {id} không tồn tại!");
+            }
+            if (province.CategoryThumb != null)
+            {
+                await _cloudinaryService.DeleteImage(province.CategoryThumb);
             }
             _dataContext.ProvinceEntitys.Remove(province);
             await _dataContext.SaveChangesAsync();
@@ -84,7 +88,7 @@ namespace review.Services
                 }
             }
             province.Name = province.Name;
-            province.CategoryThumb = image.PublicId;
+            province.CategoryThumb = image.SecureUrl.OriginalString;
             province.Slug = req.Slug;
             _dataContext.ProvinceEntitys.Update(province);
             await _dataContext.SaveChangesAsync();

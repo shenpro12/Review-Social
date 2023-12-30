@@ -28,17 +28,17 @@ namespace review.Services
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(file.FileName, stream),
-                Folder = "UserAvatar"
             };
             var uploadResult = await cloudinary.UploadAsync(uploadParams);
             return uploadResult;
         }
 
-        public async Task<DeletionResult>DeleteImage (string id)
+        public async Task<DeletionResult>DeleteImage (string url)
         {
             Account account = new Account(_options.CloudName, _options.Key, _options.SecretKey);
             Cloudinary cloudinary = new Cloudinary(account);
             cloudinary.Api.Secure = true;
+            var id = url.Split("/")[7].Split(".")[0];
             var deleteParams = new DeletionParams(id)
             {
                 ResourceType = ResourceType.Image,

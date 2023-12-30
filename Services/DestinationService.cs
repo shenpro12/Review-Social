@@ -66,7 +66,7 @@ namespace review.Services
                 MaxPrice = req.MaxPrice,
                 Open = req.Open,
                 Closed = req.Closed,
-                Thumb = image.PublicId,
+                Thumb = image.SecureUrl.OriginalString,
                 Lat = req.Lat,
                 Long = req.Long,
                 UserID = _userID,
@@ -83,6 +83,10 @@ namespace review.Services
             if(destination == null)
             {
                 throw new NotFoundException($"Địa điểm '{id}' không tồn tại!");
+            }
+            if (destination.Thumb != null)
+            {
+                await _cloudinaryService.DeleteImage(destination.Thumb);
             }
             _dataContext.DestinationEntitys.Remove(destination);
             await _dataContext.SaveChangesAsync();
@@ -199,7 +203,7 @@ namespace review.Services
             data.MaxPrice = req.MaxPrice is not null ? req.MaxPrice : data.MaxPrice;
             data.Open = req.Open is not null ? req.Open : data.Open;
             data.Closed = req.Closed is not null ? req.Closed : data.Closed;
-            data.Thumb = image.PublicId != null ? image.PublicId : data.Thumb;
+            data.Thumb = image.SecureUrl.OriginalString != null ? image.SecureUrl.OriginalString : data.Thumb;
             data.Lat = req.Lat is not null ? req.Lat : data.Lat;
             data.Long = req.Long is not null ? req.Long : data.Long;
 

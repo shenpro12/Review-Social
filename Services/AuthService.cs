@@ -91,7 +91,7 @@ namespace review.Services
                 Profile = new ProfileEntity() //Tạo profile mặc định
                 {
                     ID = Guid.NewGuid().ToString(),
-                    Name = null,
+                    Name = req.UserName,
                     Phone = null,
                     Gender = null,
                     Avatar = "",

@@ -17,7 +17,7 @@ namespace review.Controllers
             _categoryService = categoryService;
         }
 
-        [Authorize(Roles = "Admin")]//những route chỉ cho admin xài thì khai báo ntn 
+        //[Authorize(Roles = "Admin")]//những route chỉ cho admin xài thì khai báo ntn 
         [HttpPost]
         public async Task<IActionResult> Add([FromForm] CategoryReqModel req)
         {
@@ -25,7 +25,7 @@ namespace review.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromForm] CategoryReqModel req, string id)
         {
@@ -33,7 +33,7 @@ namespace review.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {

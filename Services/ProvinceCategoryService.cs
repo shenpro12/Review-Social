@@ -19,7 +19,7 @@ namespace review.Services
 
         Task<List<ProvinceCategoryResModel>> GetAll();
 
-        Task<List<ProvinceCategoryResModel>> GetByProvince(string provineId);
+        Task<ProvinceCategoryGroupResModel> GetByProvince(string provineId);
     }
     public class ProvinceCategoryService : IProvinceCategoryService
     {
@@ -53,7 +53,7 @@ namespace review.Services
             {
                 ID = Guid.NewGuid().ToString(),
                 Name = req.Name,
-                Thumb = image.PublicId,
+                Thumb = image.SecureUrl.OriginalString,
                 Province = province,
             };
 
@@ -67,6 +67,10 @@ namespace review.Services
             if (provinceCategory == null)
             {
                 throw new NotFoundException($"Category ID '{id}' không tồn tại!");
+            }
+            if (provinceCategory.Thumb != null)
+            {
+                await _cloudinaryService.DeleteImage(provinceCategory.Thumb);
             }
             _dataContext.ProvinceCategoryEntitys.Remove(provinceCategory);
             await _dataContext.SaveChangesAsync();
@@ -91,22 +95,27 @@ namespace review.Services
             return data;
         }
 
-        public async Task<List<ProvinceCategoryResModel>> GetByProvince(string provineId)
+        public async Task<ProvinceCategoryGroupResModel> GetByProvince(string provineId)
         {
 
-            var provinceCategory = _dataContext.ProvinceCategoryEntitys.Where(p => p.ProvinceID == provineId);
+            var provinceCategory = _dataContext.ProvinceCategoryEntitys.Include(s => s.Province).Where(p => p.ProvinceID == provineId);
 
-            var data = new List<ProvinceCategoryResModel>();
+            var data = new ProvinceCategoryGroupResModel();
 
-            if (provinceCategory is not null)
+            if (provinceCategory.Count() > 0)
             {
-                data = provinceCategory.Select(s => new ProvinceCategoryResModel
+                data = new ProvinceCategoryGroupResModel()
                 {
-                    ID = s.ID,
-                    Name = s.Name,
-                    Thumb = s.Thumb,
-                    ProvinceID = s.ProvinceID,
-                }).ToList();
+                    Items = provinceCategory.Select(s => new ProvinceCategoryResModel
+                    {
+                        ID = s.ID,
+                        Name = s.Name,
+                        Thumb = s.Thumb,
+                        ProvinceID = s.ProvinceID,
+                    }),
+                    CategorySlug = provinceCategory.FirstOrDefault().Province.Slug,
+                    CategoryThumb = provinceCategory.FirstOrDefault().Province.CategoryThumb,
+                };
             }
             return data;
         }
@@ -142,7 +151,7 @@ namespace review.Services
                 }
             }
             provinceCategory.Name = req.Name;
-            provinceCategory.Thumb = image.PublicId;
+            provinceCategory.Thumb = image.SecureUrl.OriginalString;
             provinceCategory.ProvinceID = req.ProvinceID;
             _dataContext.ProvinceCategoryEntitys.Update(provinceCategory);
             await _dataContext.SaveChangesAsync();

@@ -11,4 +11,12 @@ namespace review.Common.ResModels
         public string Thumb { get; set; }
         public string ProvinceID { get; set; }
     }
+    public class ProvinceCategoryGroupResModel
+    {
+        
+        public string CategoryThumb { get; set; }
+        public string CategorySlug { get; set; }
+        public IEnumerable<ProvinceCategoryResModel> Items { get; set; }
+    }
+
 }
