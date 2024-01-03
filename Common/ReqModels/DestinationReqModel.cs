@@ -9,6 +9,7 @@ namespace review.Common.ReqModels
         public string Name { get; set; }
         [MaxLength(500)]
         public string? Address { get; set; }
+        [MaxLength(12)]
         public string? Phone { get; set; }
         public float? MinPrice { get; set; }
         public float? MaxPrice { get; set; }
@@ -22,8 +23,7 @@ namespace review.Common.ReqModels
         public string? Lat { get; set; }
         [MaxLength(50)]
         public string? Long { get; set; }
-        [Required]
-        public int Role { get; set; }
+        
         [Required]
         public string ProvinceID { get; set; }
     }
