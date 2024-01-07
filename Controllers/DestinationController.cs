@@ -60,5 +60,12 @@ namespace review.Controllers
             var response = await _destinationService.GetForMap();
             return Ok(response);
         }
+
+        [HttpGet("getByKeyword")]
+        public async Task<IActionResult> GetByKeyword([FromQuery] string keyword)
+        {
+            var response = await _destinationService.GetByKeyword(keyword);
+            return Ok(response);
+        }
     }
 }

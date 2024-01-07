@@ -19,6 +19,7 @@ namespace review.Services
         Task Delete(string id);
 
         Task<List<DestinationResModel>> GetForMap();
+        Task<List<DestinationResModel>> GetByKeyword(string keyword);
 
         Task<List<DestinationResModel>> GetAll();
 
@@ -209,6 +210,33 @@ namespace review.Services
 
             _dataContext.DestinationEntitys.Update(data);
             await _dataContext.SaveChangesAsync();
+        }
+
+        public async Task<List<DestinationResModel>> GetByKeyword(string keyword)
+        {
+            var listDestination = _dataContext.DestinationEntitys.Where(l => l.Name.ToLower().Contains(keyword.ToLower()));
+            var data = new List<DestinationResModel>();
+            if (listDestination is not null)
+            {
+                data = listDestination.Select(s => new DestinationResModel
+                {
+                    ID = s.ID,
+                    Name = s.Name,
+                    Address = s.Address,
+                    Phone = s.Phone,
+                    MinPrice = s.MinPrice,
+                    MaxPrice = s.MaxPrice,
+                    Open = s.Open,
+                    Closed = s.Closed,
+                    Thumb = s.Thumb,
+                    Lat = s.Lat,
+                    Long = s.Long,
+                    IsAdmin = s.IsAdmin,
+                    ProvinceID = s.ProvinceID,
+                    UserID = s.UserID,
+                }).ToList();
+            }
+            return data;
         }
     }
     
